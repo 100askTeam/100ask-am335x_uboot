@@ -52,7 +52,7 @@
 #define NANDARGS \
 	"updatesys=nand erase.chip;mmc dev 0; mmc rescan; " \
 		"fatload mmc 0 0x82000000 MLO; 		      		nandecc hw 8; nand write 0x82000000 0        ${filesize};" \
-		"fatload mmc 0 0x82000000 100ask_am335x_v1.dtb; nandecc hw 8; nand write 0x82000000 0x80000  ${filesize};" \
+		"fatload mmc 0 0x82000000 100ask_am335x.dtb;    nandecc hw 8; nand write 0x82000000 0x80000  ${filesize};" \
 		"fatload mmc 0 0x82000000 u-boot.img; 	  		nandecc hw 8; nand write 0x82000000 0xc0000  ${filesize};" \
 		"fatload mmc 0 0x82000000 zImage; 		  		nandecc hw 8; nand write 0x82000000 0x200000 ${filesize};" \
 		"fatload mmc 0 0x82000000 rootfs.ubi; 	  		nandecc sw;   nand write 0x82000000 0xa00000 ${filesize};" \
@@ -74,7 +74,7 @@
 #define NANDARGS ""
 #endif
 
-/*100ask_frank,add*/
+
 #undef NETARGS
 #ifdef CONFIG_CMD_NET
 #define NETARGS \
@@ -98,7 +98,7 @@
 #else
 #define NETARGS ""
 #endif
-/*100ask_frank,end add*/
+
 
 
 #define CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
@@ -119,7 +119,7 @@
 #define BOOTENV_DEV_NAME_NAND(devtypeu, devtypel, instance) \
 	#devtypel #instance " "
 
-/*100ask_frank£¬Æô¶¯Ë³Ðò:mmc0-->mmc1-->nand*/
+
 #define BOOT_TARGET_DEVICES(func) \
 	func(MMC, mmc, 0) \
 	func(LEGACY_MMC, legacy_mmc, 0) \
@@ -264,7 +264,7 @@
 #define CONFIG_SYS_NAND_ECCBYTES	14
 #define CONFIG_SYS_NAND_ONFI_DETECTION
 
-/*100ask_frank*/
+
 #define CONFIG_NAND_OMAP_ECCSCHEME	OMAP_ECC_BCH8_CODE_HW 
 #define CONFIG_NAND_OMAP_ELM
 
@@ -293,7 +293,7 @@
 #endif
 #endif /* !CONFIG_NAND */
 
-/*100ask_frank,add*/
+
 #define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
 #define CONFIG_RBTREE
