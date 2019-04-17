@@ -1,0 +1,172 @@
+/*
+ * Copyright 2014 Texas Instruments, Inc.
+ *
+ * Keystone 2 Galileo EVM device tree
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+
+#include "k2g.dtsi"
+
+/ {
+	compatible =  "ti,k2g-evm","ti,keystone";
+	model = "Texas Instruments Keystone 2 Galileo EVM";
+
+	chosen {
+		stdout-path = &uart0;
+	};
+};
+
+&mdio {
+	status = "okay";
+	ethphy0: ethernet-phy@0 {
+		reg = <0>;
+	};
+};
+
+&gbe0 {
+	phy-handle = <&ethphy0>;
+};
+
+&netcp {
+	status = "okay";
+};
+
+&spi1 {
+	status = "okay";
+
+	spi_nor: flash@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "spi-flash";
+		spi-max-frequency = <50000000>;
+		m25p,fast-read;
+		reg = <0>;
+
+		partition@0 {
+			label = "u-boot-spl";
+			reg = <0x0 0x80000>;
+			read-only;
+		};
+
+		partition@1 {
+			label = "misc";
+			reg = <0x80000 0xf80000>;
+		};
+	};
+};
+
+&qspi {
+	status = "okay";
+
+        flash0: m25p80@0 {
+                compatible = "s25fl512s","spi-flash";
+                reg = <0>;
+                spi-tx-bus-width = <1>;
+                spi-rx-bus-width = <4>;
+                spi-max-frequency = <96000000>;
+                #address-cells = <1>;
+                #size-cells = <1>;
+                tshsl-ns = <392>;
+                tsd2d-ns = <392>;
+                tchsh-ns = <100>;
+                tslch-ns = <100>;
+		block-size = <18>;
+
+
+                partition@0 {
+                        label = "QSPI.u-boot-spl-os";
+                        reg = <0x00000000 0x00100000>;
+                };
+                partition@1 {
+                        label = "QSPI.u-boot-env";
+                        reg = <0x00100000 0x00040000>;
+                };
+                partition@2 {
+                        label = "QSPI.skern";
+                        reg = <0x00140000 0x0040000>;
+                };
+                partition@3 {
+                        label = "QSPI.pmmc-firmware";
+                        reg = <0x00180000 0x0040000>;
+                };
+                partition@4 {
+                        label = "QSPI.kernel";
+                        reg = <0x001C0000 0x0800000>;
+                };
+                partition@5 {
+                        label = "QSPI.file-system";
+                        reg = <0x009C0000 0x3640000>;
+                };
+        };
+};
+
+&gpmc {
+	status = "okay";
+	ranges = <0 0 0x30000000 0x01000000>;	/* CS0 space. Min partition = 16MB */
+	nand@0,0 {
+		compatible = "ti,omap2-nand";
+		reg = <0 0 4>;			/* CS0, I/O window 4 bytes */
+		interrupts = <GIC_SPI 196 IRQ_TYPE_EDGE_RISING>;
+		ti,nand-ecc-opt = "bch16";
+		ti,elm-id = <&elm>;
+		nand-bus-width = <16>;
+		gpmc,device-width = <2>;
+		gpmc,sync-clk-ps = <0>;
+		gpmc,cs-on-ns = <0>;
+		gpmc,cs-rd-off-ns = <40>;
+		gpmc,cs-wr-off-ns = <40>;
+		gpmc,adv-on-ns = <0>;
+		gpmc,adv-rd-off-ns = <25>;
+		gpmc,adv-wr-off-ns = <25>;
+		gpmc,we-on-ns = <0>;
+		gpmc,we-off-ns = <20>;
+		gpmc,oe-on-ns = <3>;
+		gpmc,oe-off-ns = <30>;
+		gpmc,access-ns = <30>;
+		gpmc,rd-cycle-ns = <40>;
+		gpmc,wr-cycle-ns = <40>;
+		gpmc,wait-pin = <0>;
+		gpmc,bus-turnaround-ns = <0>;
+		gpmc,cycle2cycle-delay-ns = <0>;
+		gpmc,clk-activation-ns = <0>;
+		gpmc,wait-monitoring-ns = <0>;
+		gpmc,wr-access-ns = <40>;
+		gpmc,wr-data-mux-bus-ns = <0>;
+		/* MTD partition table */
+		/* All SPL-* partitions are sized to minimal length
+		 * which can be independently programmable. For
+		 * NAND flash this is equal to size of erase-block
+		 */
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		nand-on-flash-bbt;
+		/* MT29F2G16ABAFAWP - 256MB */
+		partition@0 {
+			label = "u-boot";
+			reg = <0x0 0x100000>;
+			read-only;
+		};
+		partition@100000 {
+			label = "params";
+			reg = <0x100000 0x80000>;
+		};
+
+		partition@180000 {
+			label = "ubifs";
+			reg = <0x180000 0xfe80000>;
+		};
+	};
+};
+
+&mmc0 {
+	status = "okay";
+};
+
+&mmc1 {
+	status = "okay";
+};

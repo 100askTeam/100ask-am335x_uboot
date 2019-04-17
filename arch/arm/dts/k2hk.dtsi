@@ -1,0 +1,188 @@
+/*
+ * Copyright 2013-2014 Texas Instruments, Inc.
+ *
+ * Keystone 2 Kepler/Hawking soc specific device tree
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+/ {
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		interrupt-parent = <&gic>;
+
+		cpu@0 {
+			compatible = "arm,cortex-a15";
+			device_type = "cpu";
+			reg = <0>;
+		};
+
+		cpu@1 {
+			compatible = "arm,cortex-a15";
+			device_type = "cpu";
+			reg = <1>;
+		};
+
+		cpu@2 {
+			compatible = "arm,cortex-a15";
+			device_type = "cpu";
+			reg = <2>;
+		};
+
+		cpu@3 {
+			compatible = "arm,cortex-a15";
+			device_type = "cpu";
+			reg = <3>;
+		};
+	};
+
+	soc {
+		/include/ "k2hk-clocks.dtsi"
+
+		dspgpio0: keystone_dsp_gpio@02620240 {
+			compatible = "ti,keystone-dsp-gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio,syscon-dev = <&devctrl 0x240>;
+		};
+
+		dspgpio1: keystone_dsp_gpio@2620244 {
+			compatible = "ti,keystone-dsp-gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio,syscon-dev = <&devctrl 0x244>;
+		};
+
+		dspgpio2: keystone_dsp_gpio@2620248 {
+			compatible = "ti,keystone-dsp-gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio,syscon-dev = <&devctrl 0x248>;
+		};
+
+		dspgpio3: keystone_dsp_gpio@262024c {
+			compatible = "ti,keystone-dsp-gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio,syscon-dev = <&devctrl 0x24c>;
+		};
+
+		dspgpio4: keystone_dsp_gpio@2620250 {
+			compatible = "ti,keystone-dsp-gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio,syscon-dev = <&devctrl 0x250>;
+		};
+
+		dspgpio5: keystone_dsp_gpio@2620254 {
+			compatible = "ti,keystone-dsp-gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio,syscon-dev = <&devctrl 0x254>;
+		};
+
+		dspgpio6: keystone_dsp_gpio@2620258 {
+			compatible = "ti,keystone-dsp-gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio,syscon-dev = <&devctrl 0x258>;
+		};
+
+		dspgpio7: keystone_dsp_gpio@262025c {
+			compatible = "ti,keystone-dsp-gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio,syscon-dev = <&devctrl 0x25c>;
+		};
+
+		mdio: mdio@02090300 {
+			compatible	= "ti,keystone_mdio", "ti,davinci_mdio";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x02090300 0x100>;
+			status = "disabled";
+			clocks = <&clkcpgmac>;
+			clock-names = "fck";
+			bus_freq	= <2500000>;
+		};
+
+		rapidio: rapidio@2900000 {
+			compatible = "ti,keystone-rapidio";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			reg = <0x2900000 0x40000>,    /* rio regs */
+			      <0x2620000 0x1000>,     /* boot config regs */
+			      <0x232c000 0x2000>;     /* serdes config regs */
+			reg-names = "rio", "boot_config", "serdes";
+			clocks = <&clksrio>;
+			clock-names = "clk_srio";
+			dma-coherent;
+
+			ti,navigator-dmas = <&dma_srio 18>,
+					    <&dma_srio 19>,
+					    <&dma_srio 0>,
+					    <&dma_srio 1>;
+			ti,navigator-dma-names = "riorx0", "riorx1",
+						 "riotx0", "riotx1";
+
+			keystone2-serdes;
+			baudrate  = <3>;              /* 5 Gbps */
+			path-mode = <4>;              /* 1 port in 4x */
+			port-register-timeout = <30>; /* 30 seconds */
+
+			lsu = <0 0>;    /* available LSU range (start end) */
+			num-dio-channels = <8>; /* number of DIO DMA channels */
+
+			ports = <0x1>;      /* bitfield of port(s) to probe */
+
+			dev-id-size = <0>;  /* RapidIO common transport system
+					     * size.
+					     * 0 - Small size. 8-bit deviceID
+					     *     fields. 256 devices.
+					     * 1 - Large size, 16-bit deviceID
+					     *     fields. 65536 devices.
+					     */
+
+			interrupts = <0 152 0xf01
+				      0 153 0xf01>; /* RIO and LSU IRQs */
+
+			num-mboxes = <2>;
+
+			mbox-0 {
+				rx-channel = "riorx0";
+				rx-pool = <128 15>; /* size region_id */
+				rx-queue-depth  = <256 0 0 0>;
+				rx-buffer-size  = <4096 0 0 0>;
+				/*rx-queue = <8714>;*/
+				/*stream-id = <0>;*/
+				tx-channel = "riotx0";
+				tx-pool = <128 15>;
+				tx-queue-depth = <256>;
+				tx-queue = <672>; /* for channel 0 */
+				/*tx-completion-queue = <8716>;*/
+				/*tx-garbage-queue = <8717>;*/
+			};
+
+			mbox-1 {
+				rx-channel = "riorx1";
+				rx-pool = <128 15>;
+				rx-queue-depth  = <256 0 0 0>;
+				rx-buffer-size  = <4096 0 0 0>;
+				/*rx-queue = <8715>;*/
+				/*stream-id = <1>;*/
+				tx-channel = "riotx1";
+				tx-pool = <128 15>;
+				tx-queue-depth = <256>;
+				tx-queue = <673>; /* for channel 1 */
+				/*tx-completion-queue = <8718>;*/
+				/*tx-garbage-queue = <8719>;*/
+			};
+		};
+
+		/include/ "k2hk-netcp.dtsi"
+	};
+};
