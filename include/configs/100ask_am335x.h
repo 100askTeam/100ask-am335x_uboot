@@ -1,5 +1,5 @@
 /*
- * 100ask_am335x_v1.h
+ * 100ask_am335x.h
  *
  * Copyright (C) 2011 Texas Instruments Incorporated - http://www.ti.com/
  *
@@ -52,7 +52,7 @@
 #define NANDARGS \
 	"updatesys=nand erase.chip;mmc dev 0; mmc rescan; " \
 		"fatload mmc 0 0x82000000 MLO; 		      		nandecc hw 8; nand write 0x82000000 0        ${filesize};" \
-		"fatload mmc 0 0x82000000 100ask_am335x.dtb;    nandecc hw 8; nand write 0x82000000 0x80000  ${filesize};" \
+		"fatload mmc 0 0x82000000 100ask-am335x.dtb;    nandecc hw 8; nand write 0x82000000 0x80000  ${filesize};" \
 		"fatload mmc 0 0x82000000 u-boot.img; 	  		nandecc hw 8; nand write 0x82000000 0xc0000  ${filesize};" \
 		"fatload mmc 0 0x82000000 zImage; 		  		nandecc hw 8; nand write 0x82000000 0x200000 ${filesize};" \
 		"fatload mmc 0 0x82000000 rootfs.ubi; 	  		nandecc sw;   nand write 0x82000000 0xa00000 ${filesize};" \

@@ -18,8 +18,8 @@ config TARGET_AM335X_EVM
 	  to write software and develop hardware around
 	  an AM335x processor subsystem.
 
-config TARGET_100ASK_AM335X_V1
-    bool "Support 100ask_am335x_v1"
+config TARGET_100ASK_AM335X
+    bool "Support 100ask_am335x"
     select DM
     select DM_SERIAL
     select DM_GPIO

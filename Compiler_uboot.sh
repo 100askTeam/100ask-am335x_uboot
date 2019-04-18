@@ -10,7 +10,7 @@ export CROSS_COMPILE=arm-linux-gnueabihf-
 #make clean 
 
 #step 2:copy uboot config file 
-make am335x_evm_nandboot_defconfig
+make 100ask_am335x_defconfig
 
 
 #step 3:compiler uboot

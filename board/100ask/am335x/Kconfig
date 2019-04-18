@@ -1,7 +1,7 @@
-if TARGET_100ASK_AM335X_V1
+if TARGET_100ASK_AM335X
 
 config SYS_BOARD
-	default "am335x_v1"
+	default "am335x"
 
 config SYS_VENDOR
 	default "100ask"
@@ -10,7 +10,7 @@ config SYS_SOC
 	default "am33xx"
 
 config SYS_CONFIG_NAME
-	default "100ask_am335x_v1"
+	default "100ask_am335x"
 
 config CONS_INDEX
 	int "UART used for console"
