@@ -616,13 +616,13 @@ int nand_write_skip_bad(nand_info_t *nand, loff_t offset, size_t *length,
 		*length = 0;
 		return -EFBIG;
 	}
-
+#if 0
 	if (!need_skip && !(flags & WITH_DROP_FFS)) {
 		rval = nand_write(nand, offset, length, buffer);
-
+		printf("/rWriting at 0x%llx -- ",offset);
 		if ((flags & WITH_WR_VERIFY) && !rval)
 			rval = nand_verify(nand, offset, *length, buffer);
-
+		printf("\rErasing at 0x%llx -- %3d%% complete.",offset, );	
 		if (rval == 0)
 			return 0;
 
@@ -631,6 +631,7 @@ int nand_write_skip_bad(nand_info_t *nand, loff_t offset, size_t *length,
 			offset, rval);
 		return rval;
 	}
+#endif
 
 	while (left_to_write > 0) {
 		size_t block_offset = offset & (nand->erasesize - 1);
@@ -649,7 +650,7 @@ int nand_write_skip_bad(nand_info_t *nand, loff_t offset, size_t *length,
 			write_size = left_to_write;
 		else
 			write_size = blocksize - block_offset;
-
+		printf("\rWriting at 0x%llx -- ",offset);
 		truncated_write_size = write_size;
 #ifdef CONFIG_CMD_NAND_TRIMFFS
 		if (flags & WITH_DROP_FFS)
@@ -675,8 +676,9 @@ int nand_write_skip_bad(nand_info_t *nand, loff_t offset, size_t *length,
 		}
 
 		left_to_write -= write_size;
-	}
 
+		printf("%d%% is complete.",100-(left_to_write/(*length/100)));
+	}
 	return 0;
 }
 
